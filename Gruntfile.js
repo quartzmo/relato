@@ -5,20 +5,11 @@ module.exports = function(grunt) {
   grunt.initConfig({
     concat: {
       options: {
-        separator: ';',
-      },
-      dev: {
-        src: [
-          'vendor/react/react.js',
-          'vendor/promise-0.1.1.min/index.js',
-          'vendor/numeral/min/numeral.min.js',
-          'js/index.js'
-        ],
-        dest: 'app.js',
-      },
+        separator: ';'
+      }
     },
 
-    clean: ['app.css', 'app.js'],
+    clean: ['app.css'],
 
     sass: {
       options: {
@@ -44,31 +35,10 @@ module.exports = function(grunt) {
       }
     },
 
-    uglify: {
-      dist: {
-        options: {
-          sourceMap: 'source-map.js',
-          report: 'gzip'
-        },
-        files: {
-          'app.js': [
-            'vendor/react/react.min.js',
-            'vendor/promise-0.1.1.min/index.js',
-            'vendor/numeral/numeral.js',
-            'js/index.js'
-          ]
-        }
-      }
-    },
-
     watch: {
       css: {
         files: 'scss/**/*',
         tasks: ['sass:dev']
-      },
-      js: {
-        files: 'js/**/*',
-        tasks: ['concat:dev']
       }
     }
   });
@@ -90,8 +60,7 @@ module.exports = function(grunt) {
   ]);
   grunt.registerTask('dist', [
     'clean',
-    'sass:dist',
-    'uglify:dist'
+    'sass:dist'
   ]);
   grunt.registerTask('default', ['dev']);
 
