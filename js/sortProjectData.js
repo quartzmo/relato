@@ -30,7 +30,6 @@ var sortProjectData = function (appState) {
     appState.filteredProjects.sort(comparator);
   }
 
-  console.log("sort complete");
   return appState;
 };
 

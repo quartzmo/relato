@@ -1,5 +1,5 @@
 import React from 'react';
-import sortProjectData from './sortProjectData.js';
+import SortableTh from './SortableTh.jsx';
 import numeral from 'numeral';
 
 
@@ -18,40 +18,15 @@ var DataTable = React.createClass({
           Math.min(projects.length, page * pageLength + pageLength));
     }
 
-    var setSortProperty = function (prop, defaultOrder, e) {
-      if (appState.sort.property === prop) {
-        appState.sort.ascending = !appState.sort.ascending;
-      } else {
-        appState.sort.ascending = defaultOrder;
-        appState.sort.property = prop;
-      }
-      appState.page = 0;
-      sortProjectData(appState);
-      refresher();
-      e.preventDefault();
-    };
-
-    var sortClassName = function(prop) {
-      var className = '';
-      if (appState.sort.property === prop) {
-        if (appState.sort.ascending) {
-          className = 'ascending';
-        } else {
-          className = 'descending';
-        }
-      }
-      return className;
-    }
-
     return (
         <table>
           <thead>
             <tr>
-              <th href="#" className={sortClassName('name')} onClick={setSortProperty.bind(null, 'name', true)}>Name</th>
-              <th href="#" className={sortClassName('users')} onClick={setSortProperty.bind(null, 'users', false)}>Num Users</th>
-              <th href="#" className={sortClassName('runtimeUsers')} onClick={setSortProperty.bind(null, 'runtimeUsers', false)}>Num Runtime Users</th>
-              <th href="#" className={sortClassName('developmentUsers')} onClick={setSortProperty.bind(null, 'developmentUsers', false)}>Num Development Users</th>
-              <th href="#" className={sortClassName('pageRank')} onClick={setSortProperty.bind(null, 'pageRank', false)}>PageRank</th>
+              <SortableTh appState={appState} refresher={refresher} attrName="name" ascending={true}>Name</SortableTh>
+              <SortableTh appState={appState} refresher={refresher} attrName="users">&#35; Users</SortableTh>
+              <SortableTh appState={appState} refresher={refresher} attrName="runtimeUsers">Num Runtime Users</SortableTh>
+              <SortableTh appState={appState} refresher={refresher} attrName="developmentUsers">Num Development Users</SortableTh>
+              <SortableTh appState={appState} refresher={refresher} attrName="pageRank">PageRank</SortableTh>
             </tr>
           </thead>
           <tbody>
