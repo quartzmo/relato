@@ -3,16 +3,8 @@ import React from 'react';
 var Search = React.createClass({
 
   search: function (e) {
-    var self = this;
     var query = e.target.value.toLowerCase();
-    var projects = self.props.appState.projects;
-    var filtered = projects.filter(function (project) {
-      return project.name.toLowerCase().indexOf(query) !== -1;
-    });
-    self.props.appState.query = query;
-    self.props.appState.filteredProjects = filtered;
-    self.props.appState.page = 0;
-    self.props.refresher();
+    this.props.onSearch(query);
   },
 
   render: function () {
@@ -24,6 +16,5 @@ var Search = React.createClass({
     );
   }
 });
-
 
 export default Search;

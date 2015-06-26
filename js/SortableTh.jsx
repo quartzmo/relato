@@ -1,5 +1,4 @@
 import React from 'react';
-import sortProjectData from './sortProjectData.js';
 
 
 var SortableTh = React.createClass({
@@ -12,7 +11,6 @@ var SortableTh = React.createClass({
   setSortProperty: function (e) {
     var appState = this.props.appState;
     var attrName = this.props.attrName;
-    var refresher = this.props.refresher;
     if (appState.sort.property === attrName) {
       appState.sort.ascending = !appState.sort.ascending;
     } else {
@@ -20,8 +18,7 @@ var SortableTh = React.createClass({
       appState.sort.property = attrName;
     }
     appState.page = 0;
-    sortProjectData(appState);
-    refresher();
+    this.props.onSort();
     e.preventDefault();
   },
 

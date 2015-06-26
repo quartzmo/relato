@@ -1,7 +1,6 @@
 import React from 'react';
 import numeral from 'numeral';
 import LoadingNotification from './LoadingNotification.jsx';
-import sortProjectData from './sortProjectData.js';
 
 import Pagination from './Pagination.jsx';
 import Search from './Search.jsx';
@@ -33,19 +32,19 @@ function transformToJs(s) {
   console.log("transformToJs");
 
   return s.split('\n')
-      .slice(1)
-      .filter(function (line) {
-        return line !== '';
-      })
-      .map(function (line) {
-        var parts = line.split(',');
-        return {
-          name: parts[0],
-          runtimeUsers: parseInt(parts[1], 10),
-          developmentUsers: parseInt(parts[2], 10),
-          pageRank: parseFloat(parts[3])
-        };
-      });
+    .slice(1)
+    .filter(function (line) {
+      return line !== '';
+    })
+    .map(function (line) {
+      var parts = line.split(',');
+      return {
+        name: parts[0],
+        runtimeUsers: parseInt(parts[1], 10),
+        developmentUsers: parseInt(parts[2], 10),
+        pageRank: parseFloat(parts[3])
+      };
+    });
 }
 
 
@@ -55,19 +54,19 @@ var updateStats = function (projects) {
     return n + project.runtimeUsers + project.developmentUsers;
   }, 0);
   document.getElementById('projectCount').innerHTML =
-      numeral(nodes).format('0,0');
+    numeral(nodes).format('0,0');
   document.getElementById('referenceCount').innerHTML =
-      numeral(edges).format('0,0');
+    numeral(edges).format('0,0');
 };
 
 
 var Relato = React.createClass({
-  getDefaultProps: function() {
+  getDefaultProps: function () {
     return {
       pageLength: 15
     };
   },
-  getInitialState: function() {
+  getInitialState: function () {
     return {
       projects: [],
       page: 0,
@@ -78,39 +77,83 @@ var Relato = React.createClass({
     };
   },
 
+  // zero-based index, not 1-based page number
+  setPage: function (pageIndex) {
+    this.setState({page: pageIndex});
+  },
+
+  filterProjectData: function (query) {
+    var filtered = this.state.projects.filter(function (project) {
+      return project.name.toLowerCase().indexOf(query) !== -1;
+    });
+    this.setState({query: query, filteredProjects: filtered, page: 0});
+  },
+
+  sortProjectData: function () {
+    var ascending = this.state.sort.ascending;
+    var prop = this.state.sort.property;
+    var getter = null;
+    if (prop === 'users') {
+      getter = function (project) {
+        return project.runtimeUsers + project.developmentUsers;
+      };
+    } else {
+      getter = function (project) {
+        return project[prop];
+      };
+    }
+
+    function comparator(p1, p2) {
+      var v1 = getter(p1);
+      var v2 = getter(p2);
+
+      if (v1 < v2) {
+        return ascending ? -1 : 1;
+      } else if (v1 > v2) {
+        return ascending ? 1 : -1;
+      } else {
+        return 0;
+      }
+    }
+
+    this.state.projects.sort(comparator);
+    if (this.state.filteredProjects) {
+      this.state.filteredProjects.sort(comparator);
+    }
+
+    this.setState(this.state);
+  },
+
   componentDidMount: function () {
     var self = this;
     loadCsv()
-        .then(transformToJs)
-        .then(function (projects) {
-          updateStats(projects);
-          self.state.projects = projects;
-          sortProjectData(self.state);
-          self.setState(self.state);
-          return self.state;
-        })
-        .catch(function (err) {
-          console.error(err);
-        });
+      .then(transformToJs)
+      .then(function (projects) {
+        updateStats(projects);
+        self.state.projects = projects;
+        self.sortProjectData(self.state);
+        return self.state;
+      })
+      .catch(function (err) {
+        console.error(err);
+      });
   },
 
   render: function () {
     if (this.state.projects.length === 0) {
       return (
-          <LoadingNotification />
+        <LoadingNotification />
       );
     }
-    var self = this;
-    var refresher = function () {
-      self.forceUpdate();
-    };
+
+    var projects = this.state.query ? this.state.filteredProjects : this.state.projects;
 
     return (
-        <div>
-          <Search appState={this.state} refresher={refresher} />
-          <Pagination appState={this.state} refresher={refresher} pageLength={this.props.pageLength} />
-          <DataTable appState={this.state} refresher={refresher} pageLength={this.props.pageLength} />
-        </div>
+      <div>
+        <Search onSearch={this.filterProjectData}/>
+        <Pagination pageLength={this.props.pageLength} page={this.state.page} projectsCount={projects.length} setPage={this.setPage} />
+        <DataTable appState={this.state} pageLength={this.props.pageLength} page={this.state.page} onSort={this.sortProjectData} />
+      </div>
     )
   }
 });

@@ -5,28 +5,23 @@ import numeral from 'numeral';
 
 var DataTable = React.createClass({
   render: function () {
-    var refresher = this.props.refresher;
     var appState = this.props.appState;
-    var pageLength = this.props.pageLength;
-    var page = appState.page;
-    var projects = appState.query ? appState.filteredProjects
-        : appState.projects;
-
+    var projects = appState.query ? appState.filteredProjects : appState.projects;
     var visibleProjects = [];
     if (projects.length > 0) {
-      visibleProjects = projects.slice(page * pageLength,
-          Math.min(projects.length, page * pageLength + pageLength));
+      var offset = this.props.page * this.props.pageLength;
+      visibleProjects = projects.slice(offset, Math.min(projects.length, offset + this.props.pageLength));
     }
 
     return (
         <table>
           <thead>
             <tr>
-              <SortableTh appState={appState} refresher={refresher} attrName="name" ascending={true}>Name</SortableTh>
-              <SortableTh appState={appState} refresher={refresher} attrName="users">&#35; Users</SortableTh>
-              <SortableTh appState={appState} refresher={refresher} attrName="runtimeUsers">Num Runtime Users</SortableTh>
-              <SortableTh appState={appState} refresher={refresher} attrName="developmentUsers">Num Development Users</SortableTh>
-              <SortableTh appState={appState} refresher={refresher} attrName="pageRank">PageRank</SortableTh>
+              <SortableTh appState={appState} onSort={this.props.onSort} attrName="name" ascending={true}>Name</SortableTh>
+              <SortableTh appState={appState} onSort={this.props.onSort} attrName="users">&#35; Users</SortableTh>
+              <SortableTh appState={appState} onSort={this.props.onSort} attrName="runtimeUsers">Num Runtime Users</SortableTh>
+              <SortableTh appState={appState} onSort={this.props.onSort} attrName="developmentUsers">Num Development Users</SortableTh>
+              <SortableTh appState={appState} onSort={this.props.onSort} attrName="pageRank">PageRank</SortableTh>
             </tr>
           </thead>
           <tbody>
