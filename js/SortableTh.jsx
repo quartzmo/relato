@@ -4,29 +4,24 @@ import React from 'react';
 var SortableTh = React.createClass({
   getDefaultProps: function() {
     return {
-      ascending: false
+      initialSortAscending: false
     };
   },
 
   setSortProperty: function (e) {
-    var appState = this.props.appState;
-    var attrName = this.props.attrName;
-    if (appState.sort.property === attrName) {
-      appState.sort.ascending = !appState.sort.ascending;
-    } else {
-      appState.sort.ascending = this.props.ascending;
-      appState.sort.property = attrName;
+    var ascending = this.props.initialSortAscending;
+    if (this.props.activeAttrName === this.props.attrName) {
+      ascending = !this.props.ascending; // toggle if this th is already the active sort
     }
-    appState.page = 0;
-    this.props.onSort();
+    this.props.onSort(this.props.attrName, ascending);
     e.preventDefault();
   },
 
   render: function () {
-    var appState = this.props.appState;
+
     var className = '';
-    if (appState.sort.property === this.props.attrName) {
-      if (appState.sort.ascending) {
+    if (this.props.activeAttrName === this.props.attrName) {
+      if (this.props.ascending) {
         className = 'ascending';
       } else {
         className = 'descending';

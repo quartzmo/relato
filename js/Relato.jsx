@@ -29,8 +29,6 @@ function loadCsv() {
 
 
 function transformToJs(s) {
-  console.log("transformToJs");
-
   return s.split('\n')
     .slice(1)
     .filter(function (line) {
@@ -89,9 +87,8 @@ var Relato = React.createClass({
     this.setState({query: query, filteredProjects: filtered, page: 0});
   },
 
-  sortProjectData: function () {
-    var ascending = this.state.sort.ascending;
-    var prop = this.state.sort.property;
+  sortProjectData: function (prop, ascending) {
+
     var getter = null;
     if (prop === 'users') {
       getter = function (project) {
@@ -121,6 +118,10 @@ var Relato = React.createClass({
       this.state.filteredProjects.sort(comparator);
     }
 
+    this.state.page = 0;
+    this.state.sort.property = prop;
+    this.state.sort.ascending = ascending;
+
     this.setState(this.state);
   },
 
@@ -131,7 +132,7 @@ var Relato = React.createClass({
       .then(function (projects) {
         updateStats(projects);
         self.state.projects = projects;
-        self.sortProjectData(self.state);
+        self.sortProjectData(self.state.sort.property, self.state.sort.ascending);
         return self.state;
       })
       .catch(function (err) {
@@ -152,7 +153,7 @@ var Relato = React.createClass({
       <div>
         <Search onSearch={this.filterProjectData}/>
         <Pagination pageLength={this.props.pageLength} page={this.state.page} projectsCount={projects.length} setPage={this.setPage} />
-        <DataTable appState={this.state} pageLength={this.props.pageLength} page={this.state.page} onSort={this.sortProjectData} />
+        <DataTable projects={projects} activeAttrName={this.state.sort.property} sortAscending={this.state.sort.ascending} pageLength={this.props.pageLength} page={this.state.page} onSort={this.sortProjectData} />
       </div>
     )
   }

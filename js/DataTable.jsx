@@ -5,8 +5,7 @@ import numeral from 'numeral';
 
 var DataTable = React.createClass({
   render: function () {
-    var appState = this.props.appState;
-    var projects = appState.query ? appState.filteredProjects : appState.projects;
+    var projects = this.props.projects;
     var visibleProjects = [];
     if (projects.length > 0) {
       var offset = this.props.page * this.props.pageLength;
@@ -17,11 +16,11 @@ var DataTable = React.createClass({
         <table>
           <thead>
             <tr>
-              <SortableTh appState={appState} onSort={this.props.onSort} attrName="name" ascending={true}>Name</SortableTh>
-              <SortableTh appState={appState} onSort={this.props.onSort} attrName="users">&#35; Users</SortableTh>
-              <SortableTh appState={appState} onSort={this.props.onSort} attrName="runtimeUsers">Num Runtime Users</SortableTh>
-              <SortableTh appState={appState} onSort={this.props.onSort} attrName="developmentUsers">Num Development Users</SortableTh>
-              <SortableTh appState={appState} onSort={this.props.onSort} attrName="pageRank">PageRank</SortableTh>
+              <SortableTh activeAttrName={this.props.activeAttrName} ascending={this.props.sortAscending} onSort={this.props.onSort} attrName="name" initialSortAscending={true}>Name</SortableTh>
+              <SortableTh activeAttrName={this.props.activeAttrName} ascending={this.props.sortAscending} onSort={this.props.onSort} attrName="users">&#35; Users</SortableTh>
+              <SortableTh activeAttrName={this.props.activeAttrName} ascending={this.props.sortAscending} onSort={this.props.onSort} attrName="runtimeUsers">Num Runtime Users</SortableTh>
+              <SortableTh activeAttrName={this.props.activeAttrName} ascending={this.props.sortAscending} onSort={this.props.onSort} attrName="developmentUsers">Num Development Users</SortableTh>
+              <SortableTh activeAttrName={this.props.activeAttrName} ascending={this.props.sortAscending} onSort={this.props.onSort} attrName="pageRank">PageRank</SortableTh>
             </tr>
           </thead>
           <tbody>
