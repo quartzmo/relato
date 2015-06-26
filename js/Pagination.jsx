@@ -20,8 +20,7 @@ var Pagination = React.createClass({
     var appState = this.props.appState;
     var projects = appState.query ? appState.filteredProjects
         : appState.projects;
-    var pageLength = appState.pageLength;
-    var pageCount = Math.ceil(projects.length / pageLength);
+    var pageCount = Math.ceil(projects.length / this.props.pageLength);
     appState.page = Math.min(pageCount - 1, appState.page + 1);
     this.props.refresher();
     e.preventDefault();
@@ -31,8 +30,7 @@ var Pagination = React.createClass({
     var appState = this.props.appState;
     var projects = appState.query ? appState.filteredProjects
         : appState.projects;
-    var pageLength = appState.pageLength;
-    var pageCount = Math.ceil(projects.length / pageLength);
+    var pageCount = Math.ceil(projects.length / this.props.pageLength);
     appState.page = pageCount - 1;
     this.props.refresher();
     e.preventDefault();

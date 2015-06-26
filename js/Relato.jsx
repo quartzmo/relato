@@ -62,11 +62,15 @@ var updateStats = function (projects) {
 
 
 var Relato = React.createClass({
-  getInitialState: function () {
+  getDefaultProps: function() {
+    return {
+      pageLength: 15
+    };
+  },
+  getInitialState: function() {
     return {
       projects: [],
       page: 0,
-      pageLength: 15,
       sort: {
         property: 'pageRank',
         ascending: false
@@ -80,11 +84,10 @@ var Relato = React.createClass({
         .then(transformToJs)
         .then(function (projects) {
           updateStats(projects);
-          var appState = self.getInitialState();
-          appState.projects = projects;
-          sortProjectData(appState);
-          self.setState(appState);
-          return appState;
+          self.state.projects = projects;
+          sortProjectData(self.state);
+          self.setState(self.state);
+          return self.state;
         })
         .catch(function (err) {
           console.error(err);
@@ -105,8 +108,8 @@ var Relato = React.createClass({
     return (
         <div>
           <Search appState={this.state} refresher={refresher} />
-          <Pagination appState={this.state} refresher={refresher} />
-          <DataTable appState={this.state} refresher={refresher} />
+          <Pagination appState={this.state} refresher={refresher} pageLength={this.props.pageLength} />
+          <DataTable appState={this.state} refresher={refresher} pageLength={this.props.pageLength} />
         </div>
     )
   }

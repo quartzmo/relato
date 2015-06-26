@@ -37,7 +37,7 @@ var SortableTh = React.createClass({
     }
 
     return (
-      <th href="#" className={className} onClick={this.setSortProperty}>{ this.props.children }</th>
+      <th href="#" className={className} onClick={this.setSortProperty}>{this.props.children}</th>
     );
   }
 });

@@ -7,7 +7,7 @@ var DataTable = React.createClass({
   render: function () {
     var refresher = this.props.refresher;
     var appState = this.props.appState;
-    var pageLength = appState.pageLength;
+    var pageLength = this.props.pageLength;
     var page = appState.page;
     var projects = appState.query ? appState.filteredProjects
         : appState.projects;
